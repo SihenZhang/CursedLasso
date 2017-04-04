@@ -1,5 +1,7 @@
 package io.github.sihenzhang.cursedlasso.item;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockWall;
@@ -21,7 +23,14 @@ public class ItemCursedLasso extends Item {
     public ItemCursedLasso() {
         setCreativeTab(CreativeTabs.tabTools);
         setUnlocalizedName("cursedlasso.cursed_lasso");
+        setTextureName("cursedlasso:cursed_lasso");
         setMaxStackSize(1);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean hasEffect(ItemStack item, int pass) {
+        return item.hasTagCompound();
     }
 
     @Override
