@@ -16,8 +16,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Facing;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.List;
 
 public class ItemCursedLasso extends Item {
     public ItemCursedLasso() {
@@ -93,9 +96,34 @@ public class ItemCursedLasso extends Item {
             }
             riddenByEntity = riddenByEntity.riddenByEntity;
         }
-
         item.setTagCompound(null);
         player.setCurrentItemOrArmor(0, item);
         return true;
+    }
+
+    public String getMobTypeFromStack(ItemStack item) {
+        if(!item.hasTagCompound()) {
+            return null;
+        }
+        if(item.stackTagCompound == null || !item.stackTagCompound.hasKey("id")) {
+            return null;
+        }
+        return item.stackTagCompound.getString("id");
+    }
+
+    public static String getDisplayNameForEntity(String mobName) {
+        return StatCollector.translateToLocal("entity." + mobName + ".name");
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+        if(par1ItemStack != null) {
+            String mobName = getMobTypeFromStack(par1ItemStack);
+            if(mobName != null) {
+                par3List.add(getDisplayNameForEntity(mobName));
+            }
+        }
+        super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
     }
 }
