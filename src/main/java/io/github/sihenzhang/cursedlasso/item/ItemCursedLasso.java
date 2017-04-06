@@ -105,10 +105,11 @@ public class ItemCursedLasso extends Item {
         if(!item.hasTagCompound()) {
             return null;
         }
-        if(item.stackTagCompound == null || !item.stackTagCompound.hasKey("id")) {
+        if(item.stackTagCompound == null) {
             return null;
         }
-        return item.stackTagCompound.getString("id");
+        return item.stackTagCompound.getCompoundTag("entity").getString("id");
+
     }
 
     public static String getDisplayNameForEntity(String mobName) {
