@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -50,6 +51,9 @@ public class ItemCursedLasso extends Item {
             entity.writeToNBT(entityTag);
             mainTag.setTag("data", entityTag);
             mainTag.setString("id", EntityList.getEntityString(entity));
+            if (entity instanceof EntitySlime){
+            	mainTag.setInteger("slimesize", ((EntitySlime) entity).getSlimeSize());
+            }
             item.getTagCompound().setTag("entity", mainTag);
             player.setCurrentItemOrArmor(0, item);
             entity.setDead();
@@ -80,8 +84,10 @@ public class ItemCursedLasso extends Item {
         if(facing == ForgeDirection.UP.ordinal() && (blk instanceof BlockFence || blk instanceof BlockWall)) {
             spawnY += 0.5;
         }
+        if(entityToSpawn instanceof EntitySlime){
+        	((EntitySlime) entityToSpawn).setSlimeSize(item.stackTagCompound.getCompoundTag("entity").getInteger("slimesize"));
+        }
         entityToSpawn.setLocationAndAngles(spawnX, spawnY, spawnZ, world.rand.nextFloat() * 360.0F, 0);
-
         world.spawnEntityInWorld(entityToSpawn);
         if(entityToSpawn instanceof EntityLiving) {
             ((EntityLiving)entityToSpawn).playLivingSound();
