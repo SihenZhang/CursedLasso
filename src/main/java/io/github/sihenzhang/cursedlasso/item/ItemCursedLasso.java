@@ -59,7 +59,8 @@ public class ItemCursedLasso extends Item {
             if(entity instanceof EntityZombie){
                 mainTag.setBoolean("isBabyZombie",entity.isChild());
             }
-            item.setTagCompound(mainTag);
+            item.getTagCompound().setTag("entity",mainTag);
+            item.getTagCompound().setString("mobid",item.stackTagCompound.getCompoundTag("entity").getString("id"));
             player.setCurrentItemOrArmor(0, item);
             entity.setDead();
             return true;
@@ -79,7 +80,7 @@ public class ItemCursedLasso extends Item {
             return false;
         }
 
-        String entityId = item.getTagCompound().getString("id");
+        String entityId = item.stackTagCompound.getCompoundTag("entity").getString("id");
         Entity entityToSpawn = EntityList.createEntityByName(entityId, world);
 
         Block blk = world.getBlock(x,y,z);
@@ -90,10 +91,10 @@ public class ItemCursedLasso extends Item {
             spawnY += 0.5;
         }
         if(entityToSpawn instanceof EntitySlime) {
-            ((EntitySlime) entityToSpawn).setSlimeSize(item.stackTagCompound.getInteger("slimesize"));
+            ((EntitySlime) entityToSpawn).setSlimeSize(item.stackTagCompound.getCompoundTag("entity").getInteger("slimesize"));
         }
         if(entityToSpawn instanceof EntityZombie){
-            if(item.stackTagCompound.getBoolean("isBabyZombie"))
+            if(item.stackTagCompound.getCompoundTag("entity").getBoolean("isBabyZombie"))
                 ((EntityZombie) entityToSpawn).setChild(true);
             else
                 ((EntityZombie) entityToSpawn).setChild(false);
@@ -102,7 +103,7 @@ public class ItemCursedLasso extends Item {
         world.spawnEntityInWorld(entityToSpawn);
         if(entityToSpawn instanceof EntityLiving) {
             ((EntityLiving)entityToSpawn).playLivingSound();
-            ((EntityLiving)entityToSpawn).setHealth(item.stackTagCompound.getFloat("health"));
+            ((EntityLiving)entityToSpawn).setHealth(item.stackTagCompound.getCompoundTag("entity").getFloat("health"));
         }
 
         Entity riddenByEntity = entityToSpawn.riddenByEntity;
@@ -126,7 +127,7 @@ public class ItemCursedLasso extends Item {
         if(item.stackTagCompound == null) {
             return null;
         }
-        return item.stackTagCompound.getString("id");
+        return item.stackTagCompound.getCompoundTag("entity").getString("id");
 
     }
 
