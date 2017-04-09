@@ -1,5 +1,6 @@
 package io.github.sihenzhang.cursedlasso.item;
 
+import com.typesafe.config.ConfigException;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
@@ -11,6 +12,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySlime;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -20,7 +22,6 @@ import net.minecraft.util.Facing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
-
 import java.util.List;
 
 public class ItemCursedLasso extends Item {
@@ -49,10 +50,14 @@ public class ItemCursedLasso extends Item {
             NBTTagCompound mainTag = new NBTTagCompound();
             NBTTagCompound entityTag = new NBTTagCompound();
             entity.writeToNBT(entityTag);
+            mainTag.setFloat("health",entity.getHealth());
             mainTag.setTag("data", entityTag);
             mainTag.setString("id", EntityList.getEntityString(entity));
-            if (entity instanceof EntitySlime){
-            	mainTag.setInteger("slimesize", ((EntitySlime) entity).getSlimeSize());
+            if (entity instanceof EntitySlime) {
+                mainTag.setInteger("slimesize", ((EntitySlime) entity).getSlimeSize());
+            }
+            if(entity instanceof EntityZombie){
+                mainTag.setBoolean("isBabyZombie",entity.isChild());
             }
             item.getTagCompound().setTag("entity", mainTag);
             player.setCurrentItemOrArmor(0, item);
@@ -84,13 +89,20 @@ public class ItemCursedLasso extends Item {
         if(facing == ForgeDirection.UP.ordinal() && (blk instanceof BlockFence || blk instanceof BlockWall)) {
             spawnY += 0.5;
         }
-        if(entityToSpawn instanceof EntitySlime){
-        	((EntitySlime) entityToSpawn).setSlimeSize(item.stackTagCompound.getCompoundTag("entity").getInteger("slimesize"));
+        if(entityToSpawn instanceof EntitySlime) {
+            ((EntitySlime) entityToSpawn).setSlimeSize(item.stackTagCompound.getCompoundTag("entity").getInteger("slimesize"));
+        }
+        if(entityToSpawn instanceof EntityZombie){
+            if(item.stackTagCompound.getCompoundTag("entity").getBoolean("isBabyZombie"))
+                ((EntityZombie) entityToSpawn).setChild(true);
+            else
+                ((EntityZombie) entityToSpawn).setChild(false);
         }
         entityToSpawn.setLocationAndAngles(spawnX, spawnY, spawnZ, world.rand.nextFloat() * 360.0F, 0);
         world.spawnEntityInWorld(entityToSpawn);
         if(entityToSpawn instanceof EntityLiving) {
             ((EntityLiving)entityToSpawn).playLivingSound();
+            ((EntityLiving)entityToSpawn).setHealth(item.stackTagCompound.getCompoundTag("entity").getFloat("health"));
         }
 
         Entity riddenByEntity = entityToSpawn.riddenByEntity;
