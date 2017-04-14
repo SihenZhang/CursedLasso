@@ -27,8 +27,8 @@ import java.util.List;
 public class ItemCursedLasso extends Item {
     public ItemCursedLasso() {
         setCreativeTab(CreativeTabs.tabTools);
-        setUnlocalizedName("cursedlasso.cursed_lasso");
-        setTextureName("cursedlasso:cursed_lasso");
+        setUnlocalizedName("assets.cursedlasso.cursed_lasso");
+        setTextureName("assets.cursedlasso:cursed_lasso");
         setMaxStackSize(1);
     }
 
@@ -60,7 +60,6 @@ public class ItemCursedLasso extends Item {
                 mainTag.setBoolean("isBabyZombie",entity.isChild());
             }
             item.getTagCompound().setTag("entity",mainTag);
-            item.getTagCompound().setString("mobid",item.stackTagCompound.getCompoundTag("entity").getString("id"));
             player.setCurrentItemOrArmor(0, item);
             entity.setDead();
             return true;
