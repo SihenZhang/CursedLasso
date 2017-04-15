@@ -27,8 +27,8 @@ import java.util.List;
 public class ItemCursedLasso extends Item {
     public ItemCursedLasso() {
         setCreativeTab(CreativeTabs.tabTools);
-        setUnlocalizedName("assets.cursedlasso.cursed_lasso");
-        setTextureName("assets.cursedlasso:cursed_lasso");
+        setUnlocalizedName("cursedlasso.cursed_lasso");
+        setTextureName("cursedlasso:cursed_lasso");
         setMaxStackSize(1);
     }
 

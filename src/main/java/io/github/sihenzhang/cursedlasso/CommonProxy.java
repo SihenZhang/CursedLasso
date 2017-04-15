@@ -9,6 +9,7 @@ public class CommonProxy {
     }
 
     public void init() {
+        new CraftingLoader();
     }
 
     public void posInit() {
